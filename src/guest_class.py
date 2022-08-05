@@ -23,3 +23,12 @@ class Guest:
     def leave_room(self):
         self.current_room.guests.remove(self.name)
         self.current_room = None
+        
+        
+    def buy_drink(self, room, drink_name):
+        if drink_price := room.get_drink_price(drink_name):
+            if self.can_afford(drink_price):
+                if room.sell_drink(self.name, drink_name):
+                    self.wallet -= drink_price
+            
+        

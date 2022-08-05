@@ -48,15 +48,33 @@ class TestRoom(unittest.TestCase):
     def test_room_has_till(self):
         self.assertEqual(0, self.room1.till)
         self.assertEqual(0, self.room2.till)
-        self.assertEqual(0, self.room3.till)
-        
+        self.assertEqual(0, self.room3.till)    
         
     # Test rooms have an empty dictionary database of costumers
     def test_has_database(self):
         self.assertEqual({}, self.room1.costumer_spending_history)   
         self.assertEqual({}, self.room2.costumer_spending_history)   
         self.assertEqual({}, self.room3.costumer_spending_history)   
-        
+           
+    # Test room has an empty fridge list
+    def test_room_has_fridge(self):
+        self.assertEqual([], self.room1.fridge)
+    
+    def test_add_drink_to_fridge(self):
+        self.room1.add_drink("Vodka", 5, 40)
+        self.assertEqual(1, len(self.room1.fridge))
+        self.assertEqual("Vodka", self.room1.fridge[0]["name"])
+        self.assertEqual(5, self.room1.fridge[0]["price"])
+        self.assertEqual(40, self.room1.fridge[0]["stock"])
+
+    def test_add_repeat_drink_to_fridge(self):
+        self.room1.add_drink("Vodka", 5, 40)
+        self.room1.add_drink("Vodka", 5, 40)
+        self.assertEqual(1, len(self.room1.fridge))
+        self.assertEqual("Vodka", self.room1.fridge[0]["name"])
+        self.assertEqual(5, self.room1.fridge[0]["price"])
+        self.assertEqual(80, self.room1.fridge[0]["stock"])
+
     # Test adding songs to playlist
     def test_add_songs_to_playlists(self):
         # Add all songs to room 1
@@ -105,7 +123,19 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(100, self.room1.costumer_spending_history["Shanda Leer"])
     
     
+    def test_sell_drink(self):
+        self.room1.add_drink("Vodka", 5, 20)
+        self.room1.sell_drink("Ben Dover", "Vodka")
+        self.room1.sell_drink("Ben Dover", "Vodka")
+        self.assertEqual(18,self.room1.fridge[0]["stock"])
+        self.assertEqual(10, self.room1.till)
+        self.assertEqual(10, self.room1.costumer_spending_history["Ben Dover"])
     
-    
-    
-    
+    def test_get_drink_price(self):
+        self.room1.add_drink("Vodka", 5, 20)
+        self.assertEqual(5, self.room1.get_drink_price("Vodka"))
+
+    def test_get_drink_price_drink_not_in_list(self):
+        self.assertEqual(False, self.room1.get_drink_price("Vodka"))
+        
+        

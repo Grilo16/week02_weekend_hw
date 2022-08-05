@@ -7,10 +7,23 @@ class Room:
         self.play_list = []
         self.till = 0
         self.costumer_spending_history = {}
+        self.fridge = []
 
      
     def add_song(self, song):
         self.play_list.append(song)
+    
+    def add_drink(self, name, price, stock):
+        drink_dict = {}
+        for drink in self.fridge:
+            if drink["name"] == name:
+                drink["price"] = price
+                drink["stock"] += stock
+                return
+        drink_dict["name"] = name
+        drink_dict["price"] = price
+        drink_dict["stock"] = stock
+        self.fridge.append(drink_dict)
         
     def can_check_in(self):
         if len(self.guests) >= self.room_capacity:
@@ -33,7 +46,22 @@ class Room:
         if not self.is_costumer_in_database(costumer_name):
             self.add_costumer_to_db(costumer_name)
         self.till += amount
-        self.add_to_costumer_spent(costumer_name, amount)       
+        self.add_to_costumer_spent(costumer_name, amount)
+        
+    def sell_drink(self, costumer_name, drink_name):
+        for drink in self.fridge:
+            if drink["name"] == drink_name:
+                if drink["stock"] == 0:
+                    return False
+                self.make_sale(costumer_name, drink["price"])
+                drink["stock"] -= 1
+                return True
+                
+    def get_drink_price(self, drink_name):
+        for drink in self.fridge:
+            if drink["name"] == drink_name:
+                return drink["price"]
+        return False
     
         
         
