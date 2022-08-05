@@ -14,9 +14,9 @@ class Guest:
         if self.can_afford(room.entry_fee):
             if room.can_check_in():
                 room.guests.append(self.name)
-                room.till += room.entry_fee
-                self.current_room = room
+                room.make_sale(self.name, room.entry_fee)
                 self.wallet -= room.entry_fee
+                self.current_room = room
                 if self.favorite_song in room.play_list:
                     return "OH MY GOD THATS MY SONG HOLD MY BEER!"
         

@@ -50,6 +50,13 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(0, self.room2.till)
         self.assertEqual(0, self.room3.till)
         
+        
+    # Test rooms have an empty dictionary database of costumers
+    def test_has_database(self):
+        self.assertEqual({}, self.room1.costumer_spending_history)   
+        self.assertEqual({}, self.room2.costumer_spending_history)   
+        self.assertEqual({}, self.room3.costumer_spending_history)   
+        
     # Test adding songs to playlist
     def test_add_songs_to_playlists(self):
         # Add all songs to room 1
@@ -70,6 +77,32 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(False, self.room1.can_check_in())
         self.assertEqual(True, self.room2.can_check_in())
         self.assertEqual(True, self.room3.can_check_in())
+        
+        
+    def test_costumer_in_database_true(self):
+        self.room1.costumer_spending_history["Ben Dover"] = self.room1.entry_fee
+        self.assertEqual(True, self.room1.is_costumer_in_database("Ben Dover"))
+    
+    def test_costumer_in_database_false(self):
+        self.room1.costumer_spending_history["Ben Dover"] = self.room1.entry_fee
+        self.assertEqual(False, self.room1.is_costumer_in_database("Shanda Leer"))
+        
+    def test_store_costumer_data(self):
+        self.room1.add_costumer_to_db("Shanda Leer")
+        self.assertEqual(True, self.room1.is_costumer_in_database("Shanda Leer"))
+    
+    def test_add_to_costumer_spent(self):
+        self.room1.add_costumer_to_db("Shanda Leer")
+        self.room1.add_to_costumer_spent("Shanda Leer", 50)
+        self.assertEqual(50, self.room1.costumer_spending_history["Shanda Leer"])
+        
+    def test_make_sale(self):
+        self.room1.make_sale("Shanda Leer", 50)
+        self.assertEqual(50, self.room1.till)
+        self.assertEqual(50, self.room1.costumer_spending_history["Shanda Leer"])
+        self.room1.make_sale("Shanda Leer", 50)
+        self.assertEqual(100, self.room1.till)
+        self.assertEqual(100, self.room1.costumer_spending_history["Shanda Leer"])
     
     
     

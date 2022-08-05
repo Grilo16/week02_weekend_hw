@@ -41,6 +41,8 @@ class TestGuest(unittest.TestCase):
     # Test guest can enter room
     def test_enter_room_success(self):
         self.guest.enter_room(self.room)
+        self.assertEqual(True, self.guest.name in self.room.costumer_spending_history)
+        
         self.assertEqual(64, self.guest.wallet)
         self.assertEqual(5, self.room.till)
         self.assertEqual(True, self.guest.name in self.room.guests)
@@ -74,5 +76,7 @@ class TestGuest(unittest.TestCase):
         self.guest.leave_room()
         self.assertEqual(False, self.guest.name in self.room.guests)
         self.assertEqual(None, self.guest.current_room)
+        
+    
 
     
