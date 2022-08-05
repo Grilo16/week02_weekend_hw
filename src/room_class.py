@@ -1,12 +1,14 @@
 class Room:
-    def __init__(self, room_name, room_capacity):
+    def __init__(self, room_name, room_capacity, entry_fee):
         self.room_name = room_name
         self.room_capacity = room_capacity
+        self.entry_fee = entry_fee
         self.guests = []
         self.play_list = []
-        # Rooms needs songs
+        self.till = 0
+
      
-    def add_songs(self, song):
+    def add_song(self, song):
         self.play_list.append(song)
         
     def can_check_in(self):
@@ -14,7 +16,6 @@ class Room:
             return False
         return True
 
-        
     
         
         

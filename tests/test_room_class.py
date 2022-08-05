@@ -11,9 +11,9 @@ class TestRoom(unittest.TestCase):
         self.gangnam = Song("Gangnam Style", "PSY")
 
         # Set up mock room objects to do tests on
-        self.room1 = Room("Le Room of Le Test LOL", 20)
-        self.room2 = Room("Le Room of Silence", 5)
-        self.room3 = Room("Le Tiny Room", 1)
+        self.room1 = Room("Le Room of Le Test LOL", 20, 5)
+        self.room2 = Room("Le Room of Silence", 5, 2)
+        self.room3 = Room("Le Tiny Room", 1, 100)
 
     # Test room has a name
     def test_room_name(self):
@@ -26,6 +26,12 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(20, self.room1.room_capacity)
         self.assertEqual(5, self.room2.room_capacity)
         self.assertEqual(1, self.room3.room_capacity)
+        
+    # Test room has entry fee
+    def test_room_has_entry_fee(self):
+        self.assertEqual(5, self.room1.entry_fee)
+        self.assertEqual(2, self.room2.entry_fee)
+        self.assertEqual(100, self.room3.entry_fee)
 
     # Test rooms have no guests to start with
         self.assertEqual(0, len(self.room1.guests))
@@ -38,14 +44,20 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(0, len(self.room2.play_list))
         self.assertEqual(0, len(self.room3.play_list))
         
+    # Test rooms have a till
+    def test_room_has_till(self):
+        self.assertEqual(0, self.room1.till)
+        self.assertEqual(0, self.room2.till)
+        self.assertEqual(0, self.room3.till)
+        
     # Test adding songs to playlist
     def test_add_songs_to_playlists(self):
         # Add all songs to room 1
-        self.room1.add_songs(self.rickRoll)
-        self.room1.add_songs(self.friday)
-        self.room1.add_songs(self.gangnam)
+        self.room1.add_song(self.rickRoll)
+        self.room1.add_song(self.friday)
+        self.room1.add_song(self.gangnam)
         # Add 1 song to room 3
-        self.room3.add_songs(self.gangnam)
+        self.room3.add_song(self.gangnam)
 
         self.assertEqual(3, len(self.room1.play_list))
         self.assertEqual(0, len(self.room2.play_list))
@@ -59,9 +71,8 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(True, self.room2.can_check_in())
         self.assertEqual(True, self.room3.can_check_in())
     
-    # test check out
     
-    # test adding songs to rooms
+    
     
     
     
