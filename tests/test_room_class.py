@@ -5,6 +5,7 @@ from src.song_class import Song
 
 class TestRoom(unittest.TestCase):
     def setUp(self):
+        
         # Set up mock songs
         self.rickRoll = Song("Never Gonna Give You Up", "Rick Astley")
         self.friday = Song("Friday", "Rebecca Black")
@@ -15,6 +16,10 @@ class TestRoom(unittest.TestCase):
         self.room2 = Room("Le Room of Silence", 5, 2)
         self.room3 = Room("Le Tiny Room", 1, 100)
 
+        # Set up mock guest
+        self.drYan_Nitor = Guest("Dr.Yan Nitor", 1000, self.friday)
+        
+        
     # Test room has a name
     def test_room_name(self):
         self.assertEqual("Le Room of Le Test LOL", self.room1.room_name)
@@ -59,7 +64,7 @@ class TestRoom(unittest.TestCase):
     # Test room has an empty fridge list
     def test_room_has_fridge(self):
         self.assertEqual([], self.room1.fridge)
-    
+
     def test_add_drink_to_fridge(self):
         self.room1.add_drink("Vodka", 5, 40)
         self.assertEqual(1, len(self.room1.fridge))
@@ -138,4 +143,21 @@ class TestRoom(unittest.TestCase):
     def test_get_drink_price_drink_not_in_list(self):
         self.assertEqual(False, self.room1.get_drink_price("Vodka"))
         
+    def test_is_vip_true(self):
+        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 100
+        self.assertEqual(True, self.room1.is_vip("Dr.Yan Nitor"))        
+
+    def test_is_vip_False(self):
+        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 10
+        self.assertEqual(False, self.room1.is_vip("Dr.Yan Nitor"))
         
+    # test vips get 10% discount
+    def test_discount_vips(self):
+        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 100
+        self.drYan_Nitor.enter_room(self.room1)
+        self.room1.add_drink("Vodka", 5, 20)
+        self.drYan_Nitor.buy_drink(self.room1, "Vodka")
+        self.assertEqual(9, self.room1.till)
+        self.assertEqual(991, self.drYan_Nitor.wallet)
+        
+    

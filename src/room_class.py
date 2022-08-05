@@ -9,7 +9,7 @@ class Room:
         self.costumer_spending_history = {}
         self.fridge = []
 
-     
+
     def add_song(self, song):
         self.play_list.append(song)
     
@@ -45,9 +45,13 @@ class Room:
     def make_sale(self, costumer_name, amount):
         if not self.is_costumer_in_database(costumer_name):
             self.add_costumer_to_db(costumer_name)
+        # Check costumer is vip
+        if self.is_vip(costumer_name):
+            amount *= 0.9 
         self.till += amount
         self.add_to_costumer_spent(costumer_name, amount)
-        
+        return amount
+            
     def sell_drink(self, costumer_name, drink_name):
         for drink in self.fridge:
             if drink["name"] == drink_name:
@@ -62,6 +66,12 @@ class Room:
             if drink["name"] == drink_name:
                 return drink["price"]
         return False
+    
+    def is_vip(self, costumer_name):
+        if self.costumer_spending_history[costumer_name] >= 100:
+            return True
+        return False
+                
     
         
         
