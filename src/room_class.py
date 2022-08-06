@@ -45,9 +45,6 @@ class Room:
     def make_sale(self, costumer_name, amount):
         if not self.is_costumer_in_database(costumer_name):
             self.add_costumer_to_db(costumer_name)
-        # Check costumer is vip
-        if self.is_vip(costumer_name):
-            amount *= 0.9 
         self.till += amount
         self.add_to_costumer_spent(costumer_name, amount)
         return amount
@@ -57,6 +54,8 @@ class Room:
             if drink["name"] == drink_name:
                 if drink["stock"] == 0:
                     return False
+                if self.is_vip(costumer_name):
+                    drink["price"] *= 0.9
                 self.make_sale(costumer_name, drink["price"])
                 drink["stock"] -= 1
                 return True
@@ -68,7 +67,9 @@ class Room:
         return False
     
     def is_vip(self, costumer_name):
-        if self.costumer_spending_history[costumer_name] >= 100:
+        if not self.is_costumer_in_database(costumer_name):
+            self.add_costumer_to_db(costumer_name)
+        if self.costumer_spending_history[costumer_name] > 100:
             return True
         return False
                 

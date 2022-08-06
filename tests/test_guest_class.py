@@ -81,7 +81,7 @@ class TestGuest(unittest.TestCase):
     def test_buy_drink_success(self):
         self.room.add_drink("Vodka", 5, 20)
         self.guest.enter_room(self.room)
-        self.guest.buy_drink(self.room, "Vodka")
+        self.guest.buy_drink("Vodka")
         self.assertEqual(59, self.guest.wallet)
         self.assertEqual(10, self.room.till)
         self.assertEqual(10, self.room.costumer_spending_history[self.guest.name])
@@ -90,7 +90,7 @@ class TestGuest(unittest.TestCase):
     def test_buy_drink_fail_no_money(self):
         self.room.add_drink("Vodka", 100, 20)
         self.guest.enter_room(self.room)
-        self.guest.buy_drink(self.room, "Vodka")
+        self.guest.buy_drink("Vodka")
         self.assertEqual(64, self.guest.wallet)
         self.assertEqual(5, self.room.till)
         self.assertEqual(5, self.room.costumer_spending_history[self.guest.name])
@@ -99,7 +99,7 @@ class TestGuest(unittest.TestCase):
     def test_buy_drink_fail_no_stock(self):
         self.room.add_drink("Vodka", 5, 0)
         self.guest.enter_room(self.room)
-        self.guest.buy_drink(self.room, "Vodka")
+        self.guest.buy_drink("Vodka")
         self.assertEqual(64, self.guest.wallet)
         self.assertEqual(5, self.room.till)
         self.assertEqual(5, self.room.costumer_spending_history[self.guest.name])

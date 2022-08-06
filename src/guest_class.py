@@ -13,11 +13,11 @@ class Guest:
     def enter_room(self, room):
         if self.can_afford(room.entry_fee):
             pay = room.entry_fee
+            if room.is_vip(self.name):
+                pay *= 0.9
             if room.can_check_in():
                 room.guests.append(self.name)
-                room.make_sale(self.name, room.entry_fee)
-                if room.is_vip(self.name):
-                    pay *= 0.9
+                room.make_sale(self.name, pay)
                 self.wallet -= pay
                 self.current_room = room
                 if self.favorite_song in room.play_list:
@@ -28,12 +28,12 @@ class Guest:
         self.current_room = None
         
         
-    def buy_drink(self, room, drink_name):
-        if drink_price := room.get_drink_price(drink_name):
+    def buy_drink(self, drink_name):
+        if drink_price := self.current_room.get_drink_price(drink_name):
+            if self.current_room.is_vip(self.name):
+                drink_price *= 0.9
             if self.can_afford(drink_price):
-                if room.sell_drink(self.name, drink_name):
-                    if room.is_vip(self.name):
-                        drink_price *= 0.9
+                if self.current_room.sell_drink(self.name, drink_name):
                     self.wallet -= drink_price
             
         

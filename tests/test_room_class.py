@@ -144,7 +144,7 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(False, self.room1.get_drink_price("Vodka"))
         
     def test_is_vip_true(self):
-        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 100
+        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 101
         self.assertEqual(True, self.room1.is_vip("Dr.Yan Nitor"))        
 
     def test_is_vip_False(self):
@@ -153,10 +153,10 @@ class TestRoom(unittest.TestCase):
         
     # test vips get 10% discount
     def test_discount_vips(self):
-        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 100
+        self.room1.costumer_spending_history[self.drYan_Nitor.name] = 101
         self.drYan_Nitor.enter_room(self.room1)
         self.room1.add_drink("Vodka", 5, 20)
-        self.drYan_Nitor.buy_drink(self.room1, "Vodka")
+        self.drYan_Nitor.buy_drink("Vodka")
         self.assertEqual(9, self.room1.till)
         self.assertEqual(991, self.drYan_Nitor.wallet)
         
