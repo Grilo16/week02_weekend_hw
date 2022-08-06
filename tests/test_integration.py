@@ -41,9 +41,7 @@ class TestIntegration(unittest.TestCase):
         self.shanda_leer.buy_drink("Beer")
         self.shanda_leer.leave_room()
         
-        # Shanda should have 895
-        # till room1 should be 105
-        
+  
 
         # Make ben_dover Vip on room2
         self.ben_dover.enter_room(self.room2)
@@ -59,17 +57,14 @@ class TestIntegration(unittest.TestCase):
         self.ben_dover.buy_drink("Water")
         self.ben_dover.leave_room()
         
-        # Ben should have 895
-        # till room2 should be 105
+    
 
 
         # Make dr_yan_nitor Vip on room3
         self.dr_yan_nitor.enter_room(self.room3)
         self.dr_yan_nitor.buy_drink("Whisky Omega Special")
         self.dr_yan_nitor.leave_room()
-        
-        # Yan should have 450
-        # and room3 till should be 505
+       
         
     def test_room_tills(self):
         self.assertEqual(100, self.room1.till)
@@ -114,7 +109,7 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(881, self.shanda_leer.wallet)
         self.assertEqual(886, self.ben_dover.wallet)
         self.assertEqual(805, self.dr_yan_nitor.wallet)
-        
+
         # Test tills
         self.assertEqual(119, self.room1.till)
         self.assertEqual(114, self.room2.till)
