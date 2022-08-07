@@ -26,9 +26,9 @@ class Room:
         self.fridge.append(drink_dict)
         
     def can_check_in(self):
-        if len(self.guests) >= self.room_capacity:
-            return False
-        return True
+        if len(self.guests) < self.room_capacity:
+            return True
+        return False
 
     def is_costumer_in_database(self, costumer_name):
         if costumer_name in self.costumer_history:
