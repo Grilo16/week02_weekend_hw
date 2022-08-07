@@ -57,9 +57,9 @@ class TestRoom(unittest.TestCase):
         
     # Test rooms have an empty dictionary database of costumers
     def test_has_database(self):
-        self.assertEqual({}, self.room1.costumer_spending_history)   
-        self.assertEqual({}, self.room2.costumer_spending_history)   
-        self.assertEqual({}, self.room3.costumer_spending_history)   
+        self.assertEqual({}, self.room1.costumer_history)   
+        self.assertEqual({}, self.room2.costumer_history)   
+        self.assertEqual({}, self.room3.costumer_history)   
            
     # Test room has an empty fridge list
     def test_room_has_fridge(self):
@@ -103,11 +103,11 @@ class TestRoom(unittest.TestCase):
         
         
     def test_costumer_in_database_true(self):
-        self.room1.costumer_spending_history["Ben Dover"] = self.room1.entry_fee
+        self.room1.costumer_history["Ben Dover"] = self.room1.entry_fee
         self.assertEqual(True, self.room1.is_costumer_in_database("Ben Dover"))
     
     def test_costumer_in_database_false(self):
-        self.room1.costumer_spending_history["Ben Dover"] = self.room1.entry_fee
+        self.room1.costumer_history["Ben Dover"] = self.room1.entry_fee
         self.assertEqual(False, self.room1.is_costumer_in_database("Shanda Leer"))
         
     def test_store_costumer_data(self):
@@ -117,15 +117,15 @@ class TestRoom(unittest.TestCase):
     def test_add_to_costumer_spent(self):
         self.room1.add_costumer_to_db("Shanda Leer")
         self.room1.add_to_costumer_spent("Shanda Leer", 50)
-        self.assertEqual(50, self.room1.costumer_spending_history["Shanda Leer"])
+        self.assertEqual(50, self.room1.costumer_history["Shanda Leer"]["spent_amount"])
         
     def test_make_sale(self):
         self.room1.make_sale("Shanda Leer", 50)
         self.assertEqual(50, self.room1.till)
-        self.assertEqual(50, self.room1.costumer_spending_history["Shanda Leer"])
+        self.assertEqual(50, self.room1.costumer_history["Shanda Leer"]["spent_amount"])
         self.room1.make_sale("Shanda Leer", 50)
         self.assertEqual(100, self.room1.till)
-        self.assertEqual(100, self.room1.costumer_spending_history["Shanda Leer"])
+        self.assertEqual(100, self.room1.costumer_history["Shanda Leer"]["spent_amount"])
     
     
     def test_sell_drink(self):
@@ -134,7 +134,7 @@ class TestRoom(unittest.TestCase):
         self.room1.sell_drink("Ben Dover", "Vodka")
         self.assertEqual(18,self.room1.fridge[0]["stock"])
         self.assertEqual(10, self.room1.till)
-        self.assertEqual(10, self.room1.costumer_spending_history["Ben Dover"])
+        self.assertEqual(10, self.room1.costumer_history["Ben Dover"]["spent_amount"])
     
     def test_get_drink_price(self):
         self.room1.add_drink("Vodka", 5, 20)
@@ -144,20 +144,48 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(False, self.room1.get_drink_price("Vodka"))
         
     def test_is_vip_true(self):
-        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 101
+        self.room1.add_costumer_to_db("Dr.Yan Nitor")
+        self.room1.costumer_history["Dr.Yan Nitor"]["spent_amount"] = 101
         self.assertEqual(True, self.room1.is_vip("Dr.Yan Nitor"))        
 
     def test_is_vip_False(self):
-        self.room1.costumer_spending_history["Dr.Yan Nitor"] = 10
+        self.room1.add_costumer_to_db("Dr.Yan Nitor")
         self.assertEqual(False, self.room1.is_vip("Dr.Yan Nitor"))
         
     # test vips get 10% discount
     def test_discount_vips(self):
-        self.room1.costumer_spending_history[self.drYan_Nitor.name] = 101
+        self.room1.add_costumer_to_db("Dr.Yan Nitor")
+        self.room1.costumer_history["Dr.Yan Nitor"]["spent_amount"] = 101
         self.drYan_Nitor.enter_room(self.room1)
         self.room1.add_drink("Vodka", 5, 20)
         self.drYan_Nitor.buy_drink("Vodka")
         self.assertEqual(9, self.room1.till)
         self.assertEqual(991, self.drYan_Nitor.wallet)
         
-    
+    def test_visit_counter(self):
+        self.drYan_Nitor.enter_room(self.room1)
+        self.drYan_Nitor.leave_room()
+        self.drYan_Nitor.enter_room(self.room1)
+        self.drYan_Nitor.leave_room()
+        self.drYan_Nitor.enter_room(self.room1)
+        self.drYan_Nitor.leave_room()
+        self.assertEqual(3, self.room1.costumer_history[self.drYan_Nitor.name]["visit_times"])
+        
+    def test_check_loyalty_status_no_status(self):
+        self.drYan_Nitor.enter_room(self.room1)
+        self.assertEqual("No status yet soz", self.room1.check_loyalty_status(self.drYan_Nitor))
+        
+    def test_check_loyalty_status_bronze(self):
+        self.drYan_Nitor.enter_room(self.room1)
+        self.room1.costumer_history[self.drYan_Nitor.name]["visit_times"] = 11
+        self.assertEqual("Bronze", self.room1.check_loyalty_status(self.drYan_Nitor))
+
+    def test_check_loyalty_status_silver(self):
+        self.drYan_Nitor.enter_room(self.room1)
+        self.room1.costumer_history[self.drYan_Nitor.name]["visit_times"] = 51
+        self.assertEqual("Silver", self.room1.check_loyalty_status(self.drYan_Nitor))
+
+    def test_check_loyalty_status_gold(self):
+        self.drYan_Nitor.enter_room(self.room1)
+        self.room1.costumer_history[self.drYan_Nitor.name]["visit_times"] = 101
+        self.assertEqual("Gold", self.room1.check_loyalty_status(self.drYan_Nitor))

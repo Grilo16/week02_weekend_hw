@@ -18,6 +18,7 @@ class Guest:
             if room.can_check_in():
                 room.guests.append(self.name)
                 room.make_sale(self.name, pay)
+                room.costumer_history[self.name]["visit_times"] += 1
                 self.wallet -= pay
                 self.current_room = room
                 if self.favorite_song in room.play_list:
@@ -36,4 +37,3 @@ class Guest:
                 if self.current_room.sell_drink(self.name, drink_name):
                     self.wallet -= drink_price
             
-        

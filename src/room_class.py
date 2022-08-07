@@ -6,7 +6,7 @@ class Room:
         self.guests = []
         self.play_list = []
         self.till = 0
-        self.costumer_spending_history = {}
+        self.costumer_history = {}
         self.fridge = []
 
 
@@ -31,16 +31,18 @@ class Room:
         return True
 
     def is_costumer_in_database(self, costumer_name):
-        if costumer_name in self.costumer_spending_history:
+        if costumer_name in self.costumer_history:
             return True
         return False
     
     
     def add_costumer_to_db(self, costumer_name):
-        self.costumer_spending_history[costumer_name] = 0            
+        data = {"spent_amount": 0, "visit_times": 0}
+        self.costumer_history[costumer_name] = data
+                    
         
     def add_to_costumer_spent(self, costumer_name, amount):
-        self.costumer_spending_history[costumer_name] += amount
+        self.costumer_history[costumer_name]["spent_amount"] += amount
         
     def make_sale(self, costumer_name, amount):
         if not self.is_costumer_in_database(costumer_name):
@@ -69,9 +71,20 @@ class Room:
     def is_vip(self, costumer_name):
         if not self.is_costumer_in_database(costumer_name):
             self.add_costumer_to_db(costumer_name)
-        if self.costumer_spending_history[costumer_name] > 100:
+        if self.costumer_history[costumer_name]["spent_amount"] > 100:
             return True
         return False
+    
+    def check_loyalty_status(self, costumer):
+        if self.costumer_history[costumer.name]["visit_times"] > 100:
+            return "Gold"
+        elif self.costumer_history[costumer.name]["visit_times"] > 50:
+            return "Silver"
+        elif self.costumer_history[costumer.name]["visit_times"] > 10:
+            return "Bronze"
+        return "No status yet soz"
+        
+        
                 
     
         
